@@ -16,6 +16,16 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@common": ["libs/common/src"],
+      "@common/*": ["libs/common/src/*"],
+      "@database": ["src/database"],
+      "@database/*": ["src/database/*"],
+      "@user": ["src/user"],
+      "@user/*": ["src/user/*"],
+      "@auth": ["src/auth"],
+      "@auth/*": ["src/auth/*"],
+    }
   }
 }

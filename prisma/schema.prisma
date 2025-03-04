@@ -75,6 +75,8 @@ model Wishlist {
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+   @@unique([userId, productId])
 }
 
 model Order {
@@ -82,7 +84,7 @@ model Order {
   totalPrice  Decimal
   status      String
   createdAt   DateTime
-  confirmedAt DateTime
+  confirmedAt DateTime?
   payment     String
 
   userId     Int
