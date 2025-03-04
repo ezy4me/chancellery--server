@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Token {
+  token     String   @unique
+  exp       DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  userAgent String
+}
+
+model User {
+  id           Int            @id @default(autoincrement())
+  email        String         @unique
+  passwordHash String
+  phone        String
+  role         String
+  token        Token[]
+  notification Notification[]
+  wishlist     Wishlist[]
+  order        Order[]
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  message   String
+  status    String
+  createdAt DateTime
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String
+  product     Product[]
+}
+
+model Product {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  price       Decimal
+  image       Bytes
+  quantity    Int
+  categoryId  Int
+  supplierId  Int
+
+  category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  supplier   Supplier     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  wishlist   Wishlist[]
+  orderItems OrderItems[]
+}
+
+model Supplier {
+  id      Int    @id @default(autoincrement())
+  name    String
+  address String
+  phone   String
+
+  product Product[]
+}
+
+model Wishlist {
+  id        Int @id @default(autoincrement())
+  userId    Int
+  productId Int
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Order {
+  id          Int      @id @default(autoincrement())
+  totalPrice  Decimal
+  status      String
+  createdAt   DateTime
+  confirmedAt DateTime
+  payment     String
+
+  userId     Int
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderItems OrderItems[]
+  report     Report[]
+}
+
+model OrderItems {
+  id       Int @id @default(autoincrement())
+  quantity Int
+  price    Decimal
+
+  orderId   Int
+  productId Int
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id          Int      @id @default(autoincrement())
+  filePath    String
+  generatedAt DateTime
+  orderId     Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
