@@ -1,5 +1,3 @@
-// wishlist.controller.ts
-
 import {
   Controller,
   Get,
@@ -12,7 +10,9 @@ import {
 import { WishlistService } from './wishlist.service';
 import { WishlistDto } from './dto';
 import { ApiTags } from '@nestjs/swagger';
+import { Public } from '@common/decorators';
 
+@Public()
 @ApiTags('wishlist')
 @Controller('wishlist')
 export class WishlistController {

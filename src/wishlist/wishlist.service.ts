@@ -10,6 +10,9 @@ export class WishlistService {
   async getWishlistByUserId(userId: number): Promise<Wishlist[]> {
     return await this.databaseService.wishlist.findMany({
       where: { userId },
+      include: {
+        product: true,
+      },
     });
   }
 
