@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
 import { Wishlist } from '@prisma/client';
 import { WishlistDto } from './dto';
@@ -17,25 +17,38 @@ export class WishlistService {
   }
 
   async addToWishlist(dto: WishlistDto): Promise<Wishlist> {
-    return await this.databaseService.wishlist.create({
-      data: {
-        productId: dto.productId,
-        userId: dto.userId,
-      },
-    });
+    try {
+      return await this.databaseService.wishlist.create({
+        data: {
+          productId: dto.productId,
+          userId: dto.userId,
+        },
+      });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new BadRequestException(
+          'This product is already in the wishlist.',
+        );
+      }
+      throw error;
+    }
   }
 
   async removeFromWishlist(
     userId: number,
     productId: number,
   ): Promise<Wishlist | null> {
-    return await this.databaseService.wishlist.delete({
-      where: {
-        userId_productId: {
-          userId,
-          productId,
+    try {
+      return await this.databaseService.wishlist.delete({
+        where: {
+          userId_productId: {
+            userId,
+            productId,
+          },
         },
-      },
-    });
+      });
+    } catch (error) {
+      throw new BadRequestException('Item not found in wishlist.', error);
+    }
   }
 }
