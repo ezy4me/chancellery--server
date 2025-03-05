@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderDto } from './dto/order.dto';
@@ -21,7 +22,9 @@ export class OrderController {
   }
 
   @Get('user/:userId')
-  async getUserOrders(@Param('userId') userId: number): Promise<Order[]> {
+  async getUserOrders(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Order[]> {
     return this.orderService.getOrdersByUser(userId);
   }
 
