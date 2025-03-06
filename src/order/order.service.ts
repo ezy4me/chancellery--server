@@ -9,7 +9,14 @@ export class OrderService {
 
   async getAllOrders(): Promise<Order[]> {
     return await this.databaseService.order.findMany({
-      include: { orderItems: true },
+      include: {
+        orderItems: {
+          include: {
+            product: true,
+          },
+        },
+        user: true,
+      },
     });
   }
 
@@ -59,7 +66,7 @@ export class OrderService {
 
   async updateOrderStatus(orderId: number, status: string): Promise<Order> {
     return await this.databaseService.order.update({
-      where: { id: orderId },
+      where: { id: Number(orderId) },
       data: { status },
     });
   }

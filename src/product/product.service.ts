@@ -8,7 +8,12 @@ export class ProductService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async getAllProducts(): Promise<Product[]> {
-    return await this.databaseService.product.findMany();
+    return await this.databaseService.product.findMany({
+      include: {
+        category: true,
+        supplier: true,
+      },
+    });
   }
 
   async getProductById(productId: number): Promise<Product | null> {

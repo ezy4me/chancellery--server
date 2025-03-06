@@ -47,7 +47,9 @@ export class OrderController {
   }
 
   @Delete(':orderId')
-  async deleteOrder(@Param('orderId') orderId: number): Promise<Order | null> {
+  async deleteOrder(
+    @Param('orderId', ParseIntPipe) orderId: number,
+  ): Promise<Order | null> {
     return this.orderService.deleteOrder(orderId);
   }
 }

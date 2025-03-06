@@ -44,7 +44,7 @@ model Category {
 }
 
 model Product {
-  id          Int    @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   price       Decimal
@@ -52,6 +52,7 @@ model Product {
   quantity    Int
   categoryId  Int
   supplierId  Int
+  createdAt   DateTime @default(now())
 
   category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   supplier   Supplier     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
@@ -76,11 +77,11 @@ model Wishlist {
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-   @@unique([userId, productId])
+  @@unique([userId, productId])
 }
 
 model Order {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   totalPrice  Decimal
   status      String
   createdAt   DateTime
@@ -94,7 +95,7 @@ model Order {
 }
 
 model OrderItems {
-  id       Int @id @default(autoincrement())
+  id       Int     @id @default(autoincrement())
   quantity Int
   price    Decimal
 

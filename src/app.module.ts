@@ -16,6 +16,7 @@ import { SupplierModule } from './supplier/supplier.module';
 import { ProductModule } from './product/product.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { OrderModule } from './order/order.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { OrderModule } from './order/order.module';
     ProductModule,
     WishlistModule,
     OrderModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
