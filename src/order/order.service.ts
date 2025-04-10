@@ -23,7 +23,18 @@ export class OrderService {
   async getOrdersByUser(userId: number): Promise<Order[]> {
     return await this.databaseService.order.findMany({
       where: { userId },
-      include: { orderItems: true },
+      include: {
+        orderItems: {
+          include: {
+            product: {
+              include: {
+                category: true,
+                supplier: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
