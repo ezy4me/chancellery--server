@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
-import { Product } from '@prisma/client';
+import { Product, Image } from '@prisma/client';
 import { ProductDto } from './dto';
+import { Express } from 'express';
 
 @Injectable()
 export class ProductService {
@@ -12,22 +13,16 @@ export class ProductService {
       include: {
         category: true,
         supplier: true,
+        image: true, // Включаем изображения
       },
     });
   }
 
   async getProductById(productId: number): Promise<Product | null> {
-    const product = await this.databaseService.product.findUnique({
+    return await this.databaseService.product.findUnique({
       where: { id: productId },
+      include: { image: true }, // Включаем изображение
     });
-
-    if (product && product.image) {
-      return {
-        ...product,
-      };
-    }
-
-    return product;
   }
 
   async createProduct(dto: ProductDto): Promise<Product> {
@@ -36,7 +31,7 @@ export class ProductService {
         name: dto.name,
         description: dto.description,
         price: Number(dto.price),
-        image: dto.image ? dto.image : undefined,
+        imageId: dto.imageId, // Указываем imageId
         quantity: Number(dto.quantity),
         categoryId: Number(dto.categoryId),
         supplierId: Number(dto.supplierId),
@@ -51,7 +46,7 @@ export class ProductService {
         name: dto.name,
         description: dto.description,
         price: Number(dto.price),
-        image: dto.image ? dto.image : undefined,
+        imageId: dto.imageId, // Указываем imageId
         quantity: Number(dto.quantity),
         categoryId: Number(dto.categoryId),
         supplierId: Number(dto.supplierId),
@@ -62,6 +57,17 @@ export class ProductService {
   async deleteProduct(productId: number): Promise<Product | null> {
     return await this.databaseService.product.delete({
       where: { id: productId },
+    });
+  }
+
+  // Метод для сохранения изображения
+  async createImage(image: Express.Multer.File): Promise<Image> {
+    return await this.databaseService.image.create({
+      data: {
+        name: image.originalname,
+        type: image.mimetype,
+        buffer: image.buffer,
+      },
     });
   }
 }

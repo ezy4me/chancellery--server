@@ -46,8 +46,13 @@ export class ProductController {
   ): Promise<Product> {
     const productData: ProductDto = {
       ...productDto,
-      image: image ? image.buffer : undefined,
     };
+
+    // Если изображение было загружено, сохраняем его отдельно
+    if (image) {
+      const imageData = await this.productService.createImage(image);
+      productData.imageId = imageData.id; // Присваиваем imageId
+    }
 
     return this.productService.createProduct(productData);
   }
@@ -62,8 +67,13 @@ export class ProductController {
   ): Promise<Product> {
     const productData: ProductDto = {
       ...productDto,
-      image: image ? image.buffer : undefined,
     };
+
+    // Если изображение было загружено, сохраняем его отдельно
+    if (image) {
+      const imageData = await this.productService.createImage(image);
+      productData.imageId = imageData.id; // Присваиваем imageId
+    }
 
     return this.productService.updateProduct(productId, productData);
   }

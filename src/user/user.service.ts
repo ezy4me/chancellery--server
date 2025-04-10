@@ -19,6 +19,8 @@ export class UserService {
   async save(user: Partial<User>): Promise<User> {
     const hashedPassword = this.hashPassword(user.passwordHash!);
 
+    console.log(user);
+
     const _user = await this.databaseService.user.create({
       data: {
         email: user.email!,

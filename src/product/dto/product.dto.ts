@@ -14,9 +14,9 @@ export class ProductDto {
   @IsNumber()
   price: number;
 
-  @ApiProperty({ required: false, type: 'string', format: 'binary' })
+  @ApiProperty()
   @IsOptional()
-  image?: any;
+  imageId?: number;
 
   @ApiProperty()
   @IsInt()

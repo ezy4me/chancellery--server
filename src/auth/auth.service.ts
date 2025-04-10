@@ -65,6 +65,8 @@ export class AuthService {
       );
     }
 
+    console.log(dto);
+
     return this.userService.save(dto).catch((err) => {
       this.logger.error(err);
       return null;

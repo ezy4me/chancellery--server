@@ -48,12 +48,13 @@ model Product {
   name        String
   description String
   price       Decimal
-  image       Bytes
+  imageId     Int?     @default(0)
   quantity    Int
   categoryId  Int
   supplierId  Int
   createdAt   DateTime @default(now())
 
+  image      Image?       @relation(fields: [imageId], references: [id], onDelete: Cascade)
   category   Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   supplier   Supplier     @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   wishlist   Wishlist[]
@@ -113,4 +114,13 @@ model Report {
   orderId     Int
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Image {
+  id        Int       @id @default(autoincrement())
+  name      String
+  type      String
+  buffer    Bytes
+  createdAt DateTime  @default(now())
+  product   Product[]
 }

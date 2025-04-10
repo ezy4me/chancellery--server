@@ -44,7 +44,7 @@ async function main() {
       quantity: 1000,
       categoryId: category1.id,
       supplierId: supplier1.id,
-      image: Buffer.from(''), // Можете добавить изображение, если оно есть
+      imageId: null,
     },
   });
 
@@ -56,7 +56,7 @@ async function main() {
       quantity: 500,
       categoryId: category1.id,
       supplierId: supplier2.id,
-      image: Buffer.from(''),
+      imageId: null,
     },
   });
 
@@ -68,7 +68,7 @@ async function main() {
       quantity: 2000,
       categoryId: category2.id,
       supplierId: supplier1.id,
-      image: Buffer.from(''),
+      imageId: null,
     },
   });
 
