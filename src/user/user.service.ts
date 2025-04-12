@@ -79,6 +79,21 @@ export class UserService {
     });
   }
 
+  async update(id: number, dto: Partial<User>): Promise<User> {
+    const updatedUser = await this.databaseService.user.update({
+      where: { id },
+      data: {
+        email: dto.email,
+        phone: dto.phone,
+        role: dto.role,
+      },
+    });
+
+    await this.cacheManager.del(updatedUser.email);
+
+    return updatedUser;
+  }
+
   private hashPassword(password: string) {
     return hashSync(password, genSaltSync(2));
   }

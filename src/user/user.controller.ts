@@ -7,10 +7,11 @@ import {
   ClassSerializerInterceptor,
   UseInterceptors,
   ParseIntPipe,
+  Patch,
 } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserResponse } from './response';
 import { CurrentUser } from '@common/decorators';
 import { JwtPayload } from '@auth/interfaces';
@@ -46,6 +47,16 @@ export class UserController {
   async findOneById(@Param('id') id: number) {
     const user = await this.userService.findOneById(id);
     return new UserResponse(user);
+  }
+
+  @UseInterceptors(ClassSerializerInterceptor)
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateUserDto,
+  ) {
+    const updatedUser = await this.userService.update(id, dto);
+    return new UserResponse(updatedUser);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

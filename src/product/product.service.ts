@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
 import { Product, Image } from '@prisma/client';
 import { ProductDto } from './dto';
-import { Express } from 'express';
 
 @Injectable()
 export class ProductService {
@@ -13,7 +12,6 @@ export class ProductService {
       include: {
         category: true,
         supplier: true,
-        image: true, // Включаем изображения
       },
     });
   }
@@ -21,7 +19,6 @@ export class ProductService {
   async getProductById(productId: number): Promise<Product | null> {
     return await this.databaseService.product.findUnique({
       where: { id: productId },
-      include: { image: true }, // Включаем изображение
     });
   }
 
@@ -31,7 +28,7 @@ export class ProductService {
         name: dto.name,
         description: dto.description,
         price: Number(dto.price),
-        imageId: dto.imageId, // Указываем imageId
+        imageId: dto.imageId,
         quantity: Number(dto.quantity),
         categoryId: Number(dto.categoryId),
         supplierId: Number(dto.supplierId),
@@ -46,7 +43,7 @@ export class ProductService {
         name: dto.name,
         description: dto.description,
         price: Number(dto.price),
-        imageId: dto.imageId, // Указываем imageId
+        imageId: dto.imageId,
         quantity: Number(dto.quantity),
         categoryId: Number(dto.categoryId),
         supplierId: Number(dto.supplierId),
@@ -60,7 +57,6 @@ export class ProductService {
     });
   }
 
-  // Метод для сохранения изображения
   async createImage(image: Express.Multer.File): Promise<Image> {
     return await this.databaseService.image.create({
       data: {
@@ -69,5 +65,21 @@ export class ProductService {
         buffer: image.buffer,
       },
     });
+  }
+
+  async getImageByProductId(
+    productId: number,
+  ): Promise<{ buffer: Buffer; type: string } | null> {
+    const product = await this.databaseService.product.findUnique({
+      where: { id: productId },
+      include: { image: true },
+    });
+
+    if (!product || !product.image) return null;
+
+    return {
+      buffer: Buffer.from(product.image.buffer),
+      type: product.image.type,
+    };
   }
 }

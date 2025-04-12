@@ -17,6 +17,7 @@ import { ProductModule } from './product/product.module';
 import { WishlistModule } from './wishlist/wishlist.module';
 import { OrderModule } from './order/order.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { MailModule } from './mail/mail.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     WishlistModule,
     OrderModule,
     DashboardModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [

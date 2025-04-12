@@ -9,6 +9,8 @@ import {
   ParseIntPipe,
   UseInterceptors,
   UploadedFile,
+  Res,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Product } from '@prisma/client';
@@ -16,7 +18,7 @@ import { ProductDto } from './dto';
 import { Public } from '@common/decorators';
 import { ApiTags, ApiConsumes } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Express } from 'express';
+import { Express, Response } from 'express';
 
 @ApiTags('product')
 @Controller('product')
@@ -37,6 +39,30 @@ export class ProductController {
     return this.productService.getProductById(productId);
   }
 
+  @Public()
+  @Get(':id/image')
+  async getImageByProductId(
+    @Param('id', ParseIntPipe) id: number,
+    @Res() res: Response,
+  ): Promise<void> {
+    const image = await this.productService.getImageByProductId(id);
+
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+
+    res.set({
+      'Content-Type': image.type,
+      'Content-Disposition': `inline; filename="product-image-${id}"`,
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      Pragma: 'no-cache',
+      Expires: '0',
+      'Content-Length': image.buffer.length.toString(),
+    });
+
+    res.end(image.buffer);
+  }
+
   @Post()
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(FileInterceptor('image'))
@@ -48,10 +74,9 @@ export class ProductController {
       ...productDto,
     };
 
-    // Если изображение было загружено, сохраняем его отдельно
     if (image) {
       const imageData = await this.productService.createImage(image);
-      productData.imageId = imageData.id; // Присваиваем imageId
+      productData.imageId = imageData.id;
     }
 
     return this.productService.createProduct(productData);
@@ -69,10 +94,9 @@ export class ProductController {
       ...productDto,
     };
 
-    // Если изображение было загружено, сохраняем его отдельно
     if (image) {
       const imageData = await this.productService.createImage(image);
-      productData.imageId = imageData.id; // Присваиваем imageId
+      productData.imageId = imageData.id;
     }
 
     return this.productService.updateProduct(productId, productData);
