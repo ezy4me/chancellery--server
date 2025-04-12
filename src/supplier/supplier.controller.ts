@@ -14,7 +14,7 @@ import { SupplierDto } from './dto';
 import { Public } from '@common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('supplier')
+@ApiTags('Supplier')
 @Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) {}

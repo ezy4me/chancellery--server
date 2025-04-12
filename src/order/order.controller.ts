@@ -12,7 +12,7 @@ import { OrderService } from './order.service';
 import { OrderDto } from './dto/order.dto';
 import { Order } from '@prisma/client';
 
-@Controller('orders')
+@Controller('Orders')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 

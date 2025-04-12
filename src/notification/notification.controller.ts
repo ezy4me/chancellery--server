@@ -14,7 +14,7 @@ import { NotificationDto } from './dto';
 import { Public } from '@common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('notification')
+@ApiTags('Notification')
 @Controller('notification')
 export class NotificationController {
   constructor(private readonly notificationService: NotificationService) {}

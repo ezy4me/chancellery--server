@@ -13,7 +13,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { Public } from '@common/decorators';
 
 @Public()
-@ApiTags('wishlist')
+@ApiTags('Wishlist')
 @Controller('wishlist')
 export class WishlistController {
   constructor(private readonly wishlistService: WishlistService) {}

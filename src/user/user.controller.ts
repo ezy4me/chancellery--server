@@ -15,7 +15,9 @@ import { CreateUserDto, UpdateUserDto } from './dto';
 import { UserResponse } from './response';
 import { CurrentUser } from '@common/decorators';
 import { JwtPayload } from '@auth/interfaces';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

@@ -1,16 +1,15 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { MailService } from './mail.service';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags } from '@nestjs/swagger';
 import { Public } from '@common/decorators';
 
-@ApiTags('mail')
+@ApiTags('Mail')
 @Controller('mail')
 export class MailController {
   constructor(private readonly mailService: MailService) {}
 
   @Public()
   @Post('contact')
-  @ApiOperation({ summary: 'Отправить сообщение из формы контактов' })
   async sendContactForm(
     @Body()
     contactData: {

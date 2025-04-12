@@ -14,7 +14,7 @@ import { CategoryDto } from './dto';
 import { Public } from '@common/decorators';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('category')
+@ApiTags('Category')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}

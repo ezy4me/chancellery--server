@@ -21,7 +21,7 @@ import { ApiTags } from '@nestjs/swagger';
 const REFRESH_TOKEN = 'refreshtoken';
 const USER_ROLE = 'user-role';
 
-@ApiTags('auth')
+@ApiTags('Authorization')
 @Public()
 @Controller('auth')
 export class AuthController {
