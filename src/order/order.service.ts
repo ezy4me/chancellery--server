@@ -41,31 +41,70 @@ export class OrderService {
   async createOrder(dto: OrderDto): Promise<Order> {
     const { orderItems, payment, status, userId } = dto;
 
-    const totalPrice = orderItems.reduce(
-      (total, item) => total + item.price * item.quantity,
-      0,
-    );
-
-    const createdOrder = await this.databaseService.order.create({
-      data: {
-        totalPrice,
-        payment,
-        status,
-        userId,
-        createdAt: new Date(),
+    const products = await this.databaseService.product.findMany({
+      where: {
+        id: { in: orderItems.map((item) => item.productId) },
       },
     });
 
-    await this.databaseService.orderItems.createMany({
-      data: orderItems.map((item: OrderItemDto) => ({
-        orderId: createdOrder.id,
-        productId: item.productId,
-        quantity: item.quantity,
-        price: item.price,
-      })),
-    });
+    const productMap = new Map(products.map((p) => [p.id, p]));
 
-    return createdOrder;
+    for (const item of orderItems) {
+      const product = productMap.get(item.productId);
+      if (!product) {
+        throw new Error(`Товар с ID ${item.productId} не найден`);
+      }
+      if (product.quantity < item.quantity) {
+        throw new Error(
+          `Недостаточно товара "${product.name}" (ID: ${product.id}). Доступно: ${product.quantity}, требуется: ${item.quantity}`,
+        );
+      }
+    }
+
+    const totalPrice = orderItems.reduce(
+      (total, item) => total + Number(item.price) * item.quantity,
+      0,
+    );
+
+    try {
+      return await this.databaseService.$transaction(async (prisma) => {
+        const createdOrder = await prisma.order.create({
+          data: {
+            totalPrice,
+            payment,
+            status,
+            userId,
+            createdAt: new Date(),
+          },
+        });
+
+        await prisma.orderItems.createMany({
+          data: orderItems.map((item: OrderItemDto) => ({
+            orderId: createdOrder.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        });
+
+        await Promise.all(
+          orderItems.map((item) =>
+            prisma.product.update({
+              where: { id: item.productId },
+              data: {
+                quantity: {
+                  decrement: item.quantity,
+                },
+              },
+            }),
+          ),
+        );
+
+        return createdOrder;
+      });
+    } catch (error) {
+      throw new Error(`Ошибка при создании заказа: ${error.message}`);
+    }
   }
 
   async getOrderById(orderId: number): Promise<Order | null> {

@@ -3,12 +3,10 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-  // Удаляем существующие данные (опционально)
   await prisma.product.deleteMany();
   await prisma.category.deleteMany();
   await prisma.supplier.deleteMany();
 
-  // Создание категорий
   const categories = await prisma.category.createMany({
     data: [
       {
@@ -67,10 +65,9 @@ async function main() {
         description: 'Печать квартальных, карманных, настенных календарей',
       },
     ],
-    skipDuplicates: true, // Пропускать дубликаты, если они есть
+    skipDuplicates: true,
   });
 
-  // Создание поставщиков
   const suppliers = await prisma.supplier.createMany({
     data: [
       {
@@ -92,11 +89,9 @@ async function main() {
     skipDuplicates: true,
   });
 
-  // Получаем ID созданных категорий и поставщиков
   const allCategories = await prisma.category.findMany();
   const allSuppliers = await prisma.supplier.findMany();
 
-  // Создание продуктов
   await prisma.product.createMany({
     data: [
       {

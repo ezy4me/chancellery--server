@@ -1,4 +1,3 @@
-// services/dashboard.service.ts
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '@database/database.service';
 import { DashboardDto } from './dto/dashboard.dto';
