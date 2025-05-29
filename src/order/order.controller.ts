@@ -7,10 +7,13 @@ import {
   Put,
   Delete,
   ParseIntPipe,
+  Res,
 } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderDto } from './dto/order.dto';
 import { Order } from '@prisma/client';
+import { Public } from '@common/decorators';
+import { Response } from 'express';
 
 @Controller('Orders')
 export class OrderController {
@@ -51,5 +54,14 @@ export class OrderController {
     @Param('orderId', ParseIntPipe) orderId: number,
   ): Promise<Order | null> {
     return this.orderService.deleteOrder(orderId);
+  }
+
+  @Public()
+  @Get(':orderId/document')
+  async generateDocument(
+    @Param('orderId', ParseIntPipe) orderId: number,
+    @Res() res: Response,
+  ) {
+    return this.orderService.generatePrintingContract(orderId, res);
   }
 }

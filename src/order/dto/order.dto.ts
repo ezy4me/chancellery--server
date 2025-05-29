@@ -20,6 +20,10 @@ export class OrderDto {
   status: string;
 
   @ApiProperty()
+  @IsString()
+  description: string;
+
+  @ApiProperty()
   @IsNumber()
   userId: number;
 }

@@ -85,6 +85,7 @@ model Order {
   id          Int       @id @default(autoincrement())
   totalPrice  Decimal
   status      String
+  description String @default("")
   createdAt   DateTime
   confirmedAt DateTime?
   payment     String
@@ -96,9 +97,10 @@ model Order {
 }
 
 model OrderItems {
-  id       Int     @id @default(autoincrement())
-  quantity Int
-  price    Decimal
+  id          Int     @id @default(autoincrement())
+  quantity    Int
+  price       Decimal
+  description String @default("")
 
   orderId   Int
   productId Int
